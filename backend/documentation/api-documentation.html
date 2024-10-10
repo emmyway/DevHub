@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DevHub API Documentation</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #2c3e50;
+        --secondary-color: #3498db;
+        --background-color: #f4f4f4;
+        --code-background: #ecf0f1;
+        --note-background: #eafaf1;
+        --note-border: #2ecc71;
+        --text-color: #333;
+        --footer-color: #777;
+      }
+
+      body {
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 20px;
+        background-color: var(--background-color);
+        color: var(--text-color);
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: var(--primary-color);
+        margin-bottom: 30px;
+        font-size: 2.5em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        border-bottom: 3px solid var(--secondary-color);
+        padding-bottom: 10px;
+      }
+
+      h2 {
+        color: var(--secondary-color);
+        border-bottom: 2px solid var(--secondary-color);
+        padding-bottom: 10px;
+        margin-top: 40px;
+      }
+
+      h3 {
+        color: var(--primary-color);
+      }
+
+      code {
+        background: var(--code-background);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-family: 'Courier New', Courier, monospace;
+      }
+
+      pre {
+        background: var(--code-background);
+        padding: 15px;
+        border-radius: 4px;
+        overflow-x: auto;
+        position: relative;
+        margin: 20px 0;
+      }
+
+      .copy-button {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+        background: var(--secondary-color);
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        padding: 6px 12px;
+        font-size: 14px;
+        transition: background-color 0.3s ease;
+      }
+
+      .copy-button:hover {
+        background: var(--primary-color);
+      }
+
+      .note {
+        background-color: var(--note-background);
+        border-left: 4px solid var(--note-border);
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 4px 4px 0;
+      }
+
+      ol {
+        padding-left: 20px;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        font-size: 0.9em;
+        color: var(--footer-color);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>DevHub API Documentation</h1>
+
+      <h2>Getting Started</h2>
+      <p>To start the Flask server, follow these steps:</p>
+      <ol>
+        <li>Open your terminal.</li>
+        <li>
+          Navigate to the project directory:
+          <pre><code>cd /path_to_the_repo/backend</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+        <li>
+          <div class="note">
+            <strong>Note:</strong>
+            Please ensure that your environment is set up
+            with all necessary dependencies. Use the following command to
+            install any required packages:
+            <pre><code>pip install -r requirements.txt</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+          </div>
+        </li>
+        <li>
+          Activate your virtual environment:
+          <pre><code>source .venv/bin/activate</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+        <li>
+          Run the Flask application:
+          <pre><code>python main.py</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+        <li>
+            The server will start, and you can access the API by default at (check the terminal for more).
+          <pre><code>http://127.0.0.1:5000</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+
+      </ol>
+
+      <h2>Available Endpoints</h2>
+
+      <h3>1. Create Post</h3>
+      <p><strong>Endpoint:</strong> <code>/create_post</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p>
+        <strong>Request Body:</strong> All three fields
+        <strong>(hostId, title, body)</strong> are required.
+      </p>
+      <pre><code>{
+  "hostId": 1,
+  "title": "My First Post",
+  "body": "This is the body of my first post."
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+      <p><strong>Response:</strong></p>
+      <pre><code>{
+  "message": "Post created successfully"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h3>2. Additional Endpoints</h3>
+      <p>
+        Further endpoints will be documented here as they are created. Please
+        refer to the API code for more details on available methods.
+      </p>
+
+      <footer>&copy; 2024 DevHub Team. All Rights Reserved.</footer>
+    </div>
+
+    <script>
+      function copyToClipboard(button) {
+        const pre = button.parentElement;
+        const code = pre.querySelector('code');
+        const text = code.textContent;
+
+        navigator.clipboard
+          .writeText(text)
+          .then(() => {
+            const originalText = button.textContent;
+            button.textContent = 'Copied!';
+            setTimeout(() => {
+              button.textContent = originalText;
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error('Failed to copy: ', err);
+          });
+      }
+    </script>
+  </body>
+</html>
