@@ -1,20 +1,28 @@
 import React from 'react';
-import { Button, Navbar, Container } from 'react-bootstrap';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import MyNavbar from './components/Navbar';
+import ArticleList from './pages/ArticleList';
+import ArticleDetails from './pages/ArticleDetails';
+import CreateArticle from './pages/CreateArticle';
+import MainLayout from './components/MainLayout';
+import SignIn from './pages/Login';
+import Signup from './pages/Signup';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
-    <div>
-      <Navbar bg="dark" variant="dark">
-        <Container>
-          <Navbar.Brand href="#home">DevHub Clone</Navbar.Brand>
-        </Container>
-      </Navbar>
-
-      <div className="container mt-5">
-        <h1>Welcome to DevHub Clone!</h1>
-        <Button variant="primary">Get Started</Button>
-      </div>
-    </div>
+    <Router>
+      <MyNavbar />
+      <Routes>
+        <Route path="/" element={<SignIn />} exact/>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/home" element={<MainLayout />} />
+        <Route path="/articles" element={<ArticleList />} />
+        <Route path="/create" element={<CreateArticle />} />
+        <Route path="/articles/:id" element={<ArticleDetails />} />
+      </Routes>
+    </Router>
   );
 }
 
