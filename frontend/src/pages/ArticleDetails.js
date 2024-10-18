@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import HandleDelete from '../components/DeleteArticle';
+import EditPost from './EditPost';
 // import './ArticleDetails.css'; // Optional: for custom styles
 
 const ArticleDetails = () => {
@@ -35,13 +36,18 @@ const ArticleDetails = () => {
   }
 
   return (
-    <div className="article-details">
+    <div className="card m-2 p-2">
       <h1>{article.title}</h1>
-      <p>{article.description}</p>
-      <div className="article-body">
+      <hr />
+      {/* <p className='text-muted'>{article.description}</p> */}
+      <div className="card-body">
         <p>{article.body}</p>
       </div>
-      <button onClick={HandleDelete} btn btn-primary>Delete</button>
+      <hr />
+      <div className="d-flex justify-content-between m-auto" >
+        <Link to={`/edit-post/${id}`} className="btn btn-primary">Edit Post</Link>
+        <HandleDelete id={id} />
+      </div>
     </div>
   );
 };
