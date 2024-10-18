@@ -1,41 +1,46 @@
 import React from 'react';
-import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
-import logo from '../holberton-logo.jpg'; // Update the path to your logo image
+import { Navbar, Nav, Form, Button } from 'react-bootstrap';
 
 const CustomNavbar = () => {
   return (
-    <div>
-    
-      <Navbar bg="light" expand="lg" clasName="mb-5">
-      <Navbar.Brand href="#home">
-        <img
-          src={logo}
-          width="30"
-          height="30"
-          className="d-inline-block align-top"
-          alt="Logo"
-        />{' '}
-        DevHub
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="basic-navbar-nav" />
-      <Navbar.Collapse id="basic-navbar-nav">
-        <Form inline align-top className="mx-auto">
-          <input
-            type="text"
-            placeholder="Search"
-            className="py-1"
-          />
-          <Button variant="outline-primary">Search</Button>
-        </Form>
+    <Navbar bg="light" expand="lg" className="mb-4 shadow-sm">
+      <div className="container">
+        {/* Brand Name or Logo */}
+        <Navbar.Brand href="/home" className="fw-bold text-primary">
+          DevHub
+        </Navbar.Brand>
 
-        <Nav className="ml-auto">
-          <Nav.Link href="/" variant="outline-primary" className="btn btn-primary">Login</Nav.Link>
-          <Nav.Link href="/create" variant="outline-primary" className="btn btn-primary">Create Post</Nav.Link>
-        </Nav>
-      </Navbar.Collapse>
-      </Navbar>
-   
-  </div>
+        {/* Navbar Toggle for mobile view */}
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          {/* Search Bar centered */}
+          <Form className="mx-auto d-flex align-items-center">
+            <input
+              type="text"
+              placeholder="Search articles"
+              className="form-control me-2 rounded-pill"
+              style={{ maxWidth: '300px' }}
+            />
+            <Button variant="outline-primary" className="rounded-pill px-4">
+              Search
+            </Button>
+          </Form>
+
+          {/* Right-aligned navigation links */}
+          <Nav className="ms-auto">
+            <Nav.Link href="/home" className="text-dark fw-bold bg-light">
+              Home
+            </Nav.Link>
+            <Nav.Link href="/login" className="text-dark fw-bold">
+              Logout
+            </Nav.Link>
+            <Button href="/create" variant="primary" className="ms-3 rounded-pill px-4">
+              Create Post
+            </Button>
+          </Nav>
+        </Navbar.Collapse>
+      </div>
+    </Navbar>
   );
 };
 
