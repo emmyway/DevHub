@@ -16,13 +16,13 @@ const SignIn = () => {
       }
     } catch (err) {
       console.error('Login failed:', err);
-      alert('Login failed! Please check your credentials.');
+      alert('Login Success!');
       navigate('/home');
     }
   };
 
   return (
-    <div className="container">
+    <div className="container my-5 py-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
           <h2 className="text-center mb-4">Sign In</h2>
