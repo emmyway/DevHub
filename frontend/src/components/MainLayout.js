@@ -14,10 +14,10 @@ const MainLayout = () => {
 
         {/* Main Content Area */}
         <Col xs={12} md={6}>
-              <span className="mx-2 h2 justify-content-center">
-                <Link to="#">Relevant </Link>
-                <Link to="#">Latest </Link>
-                <Link to="#">Top</Link>
+              <span className="d-flex mx-2 h2 justify-content-around">
+                <Link to="#" className="text-decoration-none">Relevant </Link>
+                <Link to="#" className="text-decoration-none">Latest </Link>
+                <Link to="#" className="text-decoration-none">Top</Link>
               </span>
           {/* Main articles will be rendered here */}
            <div>
