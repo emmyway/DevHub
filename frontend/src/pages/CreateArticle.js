@@ -7,21 +7,23 @@ import 'react-quill/dist/quill.snow.css'; // Import Quill styles
 const CreateArticle = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [content, setContent] = useState(''); // Quill editor state for plain text
+  const [content, setContent] = useState(''); // Quill content state (HTML format)
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Handle the Quill editor's change event and get plain text
-  const handleContentChange = (value, delta, source, editor) => {
-    const plainText = editor.getText(); // Get plain text without HTML tags
-    setContent(plainText); // Update the state with plain text
+  // Handle the Quill editor's change event and keep content in HTML
+  const handleContentChange = (value) => {
+    setContent(value); // Quill content remains in HTML format
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Extract plain text from the content to store in the database
+    const plainText = new DOMParser().parseFromString(content, 'text/html').body.innerText;
+
     // Validate form fields
-    if (!title || !description || !content.trim()) {
+    if (!title || !description || !plainText.trim()) {
       setError('All fields are required');
       return;
     }
@@ -31,11 +33,11 @@ const CreateArticle = () => {
       await axios.post('http://localhost:5000/blogs', {
         title,
         description,
-        body: content, // Send plain text as the body
+        body: plainText, // Send plain text as the body
       });
       
       // Redirect to the article list page after successful creation
-      navigate('/');
+      navigate('/home');
     } catch (err) {
       console.error('Error creating article:', err);
       setError('Failed to create article');
@@ -61,7 +63,7 @@ const CreateArticle = () => {
         </div>
 
         <div className="form-group">
-          <label clasName="fw-5">Description</label>
+          <label className="fw-5">Description</label>
           <input
             type="text"
             className="form-control"
@@ -74,9 +76,10 @@ const CreateArticle = () => {
         <div className="form-group">
           <label className="fw-3">Content</label>
           <ReactQuill
-            value={content} // Bind the plain text content
-            onChange={handleContentChange} // Handle content change to extract plain text
+            value={content} // Bind the content (HTML format)
+            onChange={handleContentChange} // Handle content change
             placeholder="Write the article content here..."
+            style={{ height: '200px', border: '1px solid #ccc', overflowY:'auto' }} // Inline styling for height and border
           />
         </div>
 
