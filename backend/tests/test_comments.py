@@ -7,7 +7,7 @@ from flask_jwt_extended import create_access_token
 class TestComments(unittest.TestCase):
     def setUp(self):
         app.config['TESTING'] = True
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///mydatabase.db"
         self.client = app.test_client()
         with app.app_context():
             db.create_all()
