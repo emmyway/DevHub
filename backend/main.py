@@ -32,6 +32,7 @@ from sqlalchemy import or_, desc, func
 from flask_caching import Cache
 import uuid
 
+
 # Redis configuration for caching
 cache = Cache(app, config={
     'CACHE_TYPE': 'redis',
@@ -51,27 +52,32 @@ def load_user(id):
 def register():
     """Register a new user."""
     data = request.get_json()
-    # Convert username to lowercase for case-insensitive comparison
+
+    # Extract and normalize data
     username = data.get("username").lower()
-    email = data.get("email")
+    email = data.get("email").lower()
     password = data.get("password")
     first_name = data.get("firstName")
-    last_name = data.get("lastName")
+    last_name = data.get("lastName")  
 
     # Validate required fields
-    if not all([username, email, password, first_name]):
+    if not all([username, email, password, first_name,last_name]):
         return jsonify({"message": "Missing required fields"}), 400
 
-    # Check for existing username or email
+    # Check for existing username or email (case-insensitive for username)
     if User.query.filter(func.lower(User.username) == username).first():
         return jsonify({"message": "Username already exists"}), 400
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already exists"}), 400
 
     # Create and save new user
-    new_user = User(username=username, email=email,
-                    first_name=first_name, last_name=last_name)
-    new_user.set_password(password)
+    new_user = User(
+        username=username,
+        email=email,
+        first_name=first_name,
+        last_name=last_name
+    )
+    new_user.set_password(password)  # Assuming this hashes the password correctly
     db.session.add(new_user)
     db.session.commit()
 
