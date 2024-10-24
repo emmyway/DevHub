@@ -1,8 +1,44 @@
-from flask import jsonify, request
-from werkzeug.security import generate_password_hash, check_password_hash
+"""
+DevHub API Backend
+
+This module contains the main Flask application for the DevHub API. It provides
+endpoints for user authentication, post management, commenting, liking, bookmarking,
+and various other features of the DevHub platform.
+
+The API uses JWT for authentication and Redis for caching frequently accessed data.
+It interacts with a database (assumed to be set up in config.py) to store and retrieve data.
+
+Key features:
+- User registration and authentication
+- Post creation, retrieval, editing, and deletion
+- Comment management
+- Like and bookmark functionality
+- Tag management
+- Search functionality
+- Trending stories
+- Recent activities
+
+Note: Ensure that all required dependencies are installed and the database is properly
+configured before running this application.
+"""
+
+from flask import jsonify, request, send_from_directory
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from config import db, app, login_manager
-from models import Post, User
+from models import Post, User, Tag, Comment
+from werkzeug.utils import secure_filename
+import os
+from sqlalchemy import or_, desc, func
+from flask_caching import Cache
+import uuid
+
+# Redis configuration for caching
+cache = Cache(app, config={
+    'CACHE_TYPE': 'redis',
+    # Adjust this URL if Redis server is not local
+    'CACHE_REDIS_URL': 'redis://localhost:6379/0',
+    'CACHE_DEFAULT_TIMEOUT': 300  # 5 minutes default cache timeout
+})
 
 
 @login_manager.user_loader
