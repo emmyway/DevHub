@@ -10,8 +10,8 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     username = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(128))
-    bio = db.Column(db.Text, nullable=True)
-    profile_pic = db.Column(db.String(255), nullable=True, default='default.jpg')
+    bio = db.Column(db.Text, nullable=True, default='')
+    profile_pic = db.Column(db.String(255), nullable=True, default='default.png')
 
     hosted_posts = db.relationship('Post', backref='host')
     commented_posts = db.relationship('Post', secondary='post_commentors', backref='commentors')
@@ -67,16 +67,16 @@ class Post(db.Model):
     updated = db.Column(db.DateTime, default=func.now(), onupdate=func.now())
     created = db.Column(db.DateTime, default=func.now())
 
-    tags = db.relationship("Tag", secondary=post_tag, backref='posts')
+    tags = db.relationship("Tag", secondary=post_tag, backref='tags')
     comments = db.relationship('Comment', backref='post')
 
     @property
     def likes(self):
-        return self.liked_by.count()
+       return len(self.liked_by) 
 
     @property
     def bookmarks(self):
-        return self.bookmarked_by.count()
+        return len(self.bookmarked_by)
 
     def __repr__(self):
         return f'<Post {self.name}>'
