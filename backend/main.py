@@ -32,6 +32,7 @@ from sqlalchemy import or_, desc, func
 from flask_caching import Cache
 import uuid
 
+
 # Redis configuration for caching
 cache = Cache(app, config={
     'CACHE_TYPE': 'redis',
@@ -43,39 +44,45 @@ cache = Cache(app, config={
 
 @login_manager.user_loader
 def load_user(id):
+    """Load user by ID for Flask-Login."""
     return User.query.get(int(id))
 
 
 @app.route("/register", methods=["POST"])
 def register():
+    """Register a new user."""
     data = request.get_json()
-    username = data.get("username")
+    # Convert username to lowercase for case-insensitive comparison
+    username = data.get("username").lower()
     email = data.get("email")
     password = data.get("password")
     first_name = data.get("firstName")
     last_name = data.get("lastName")
 
-    if not username or not email or not password or not first_name:
+    # Validate required fields
+    if not all([username, email, password, first_name]):
         return jsonify({"message": "Missing required fields"}), 400
 
-    if User.query.filter_by(username=username).first():
+    # Check for existing username or email
+    if User.query.filter(func.lower(User.username) == username).first():
         return jsonify({"message": "Username already exists"}), 400
-
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already exists"}), 400
 
-    new_user = User(
-        username=username,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
-    )
+    # Create and save new user
+    new_user = User(username=username, email=email,
+                    first_name=first_name, last_name=last_name)
     new_user.set_password(password)
-
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User registered successfully"}), 201
+    # Generate access token
+    access_token = create_access_token(identity=new_user.id)
+
+    return jsonify({
+        "message": "User registered successfully",
+        "access_token": access_token
+    }), 201
 
 
 @app.route("/login", methods=["POST"])
