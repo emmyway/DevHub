@@ -23,7 +23,7 @@ configured before running this application.
 """
 
 from flask import jsonify, request, send_from_directory
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 from config import db, app, login_manager
 from models import Post, User, Tag, Comment
 from werkzeug.utils import secure_filename
@@ -31,7 +31,6 @@ import os
 from sqlalchemy import or_, desc, func
 from flask_caching import Cache
 import uuid
-
 
 # Redis configuration for caching
 cache = Cache(app, config={
@@ -52,32 +51,27 @@ def load_user(id):
 def register():
     """Register a new user."""
     data = request.get_json()
-
-    # Extract and normalize data
+    # Convert username to lowercase for case-insensitive comparison
     username = data.get("username").lower()
-    email = data.get("email").lower()
+    email = data.get("email")
     password = data.get("password")
     first_name = data.get("firstName")
-    last_name = data.get("lastName")  
+    last_name = data.get("lastName")
 
     # Validate required fields
-    if not all([username, email, password, first_name,last_name]):
+    if not all([username, email, password, first_name]):
         return jsonify({"message": "Missing required fields"}), 400
 
-    # Check for existing username or email (case-insensitive for username)
+    # Check for existing username or email
     if User.query.filter(func.lower(User.username) == username).first():
         return jsonify({"message": "Username already exists"}), 400
     if User.query.filter_by(email=email).first():
         return jsonify({"message": "Email already exists"}), 400
 
     # Create and save new user
-    new_user = User(
-        username=username,
-        email=email,
-        first_name=first_name,
-        last_name=last_name
-    )
-    new_user.set_password(password)  # Assuming this hashes the password correctly
+    new_user = User(username=username, email=email,
+                    first_name=first_name, last_name=last_name)
+    new_user.set_password(password)
     db.session.add(new_user)
     db.session.commit()
 
@@ -137,7 +131,6 @@ def create_post():
 
 
 @app.route("/get_post/<int:post_id>", methods=["GET"])
-@jwt_required()
 def get_post(post_id):
     """Retrieves a single post with comments and metadata.
 
@@ -149,13 +142,21 @@ def get_post(post_id):
             success: ({"id": int, "title": str, ...}, 200)
             error: ({"message": str}, 404)
     """
-    current_user_id = get_jwt_identity()
-    current_user = User.query.get(current_user_id)
     post = Post.query.get(post_id)
-    host = User.query.get(post.host_id)
-
     if not post:
         return jsonify({"message": "Post not found"}), 404
+
+    host = User.query.get(post.host_id)
+
+    # Check if user is authenticated
+    current_user = None
+    try:
+        verify_jwt_in_request(optional=True)
+        current_user_id = get_jwt_identity()
+        if current_user_id:
+            current_user = User.query.get(current_user_id)
+    except:
+        pass
 
     comments = []
     for comment in post.comments:
@@ -170,8 +171,7 @@ def get_post(post_id):
                 "avatar": user.profile_pic
             },
             "likes": len(comment.likes),
-            # This line checks if the current user has liked the comment
-            "isLiked": current_user in comment.likes
+            "isLiked": current_user in comment.likes if current_user else False
         })
 
     return jsonify({
@@ -183,6 +183,7 @@ def get_post(post_id):
         "host_username": host.username if host else None,
         "host_avatar": host.profile_pic if host else None,
         "likes": len(post.liked_by),
+        "isLiked": current_user in post.liked_by if current_user else False,
         "tags": [tag.name for tag in post.tags],
         "comments": comments
     })
@@ -781,3 +782,4 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+
