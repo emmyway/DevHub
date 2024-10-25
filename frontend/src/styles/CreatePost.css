@@ -1,0 +1,309 @@
+/* Full-screen layout for Quill editor */
+.quill-editor {
+    height: calc(100vh - 300px); /* Adjust based on your layout */
+    max-height: 90vh;
+    border-radius: 8px;
+    position: relative;
+    overflow-y: auto; /* Ensure scrolling within the editor */
+    transition: all 0.3s ease;
+}
+
+/* Fullscreen mode styles */
+.quill-editor.fullscreen {
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+}
+  
+/* Floating toolbar */
+.ql-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #374151;
+    border-bottom: 1px solid #4A5568;
+    padding-right: 48px; /* Make room for fullscreen toggle */
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+    .quill-editor {
+        height: calc(100vh - 250px); /* Adjust for mobile */
+    }
+}
+  
+.create-post-container {
+    min-height: 100vh;
+    background-color: #1F2937;
+    color: #E5E7EB;
+    transition: all 0.3s ease;
+}
+
+/* Add fullscreen mode container styles */
+.create-post-container.fullscreen-mode {
+    padding: 0;
+    margin: 0;
+}
+
+.fullscreen-mode .max-w-5xl {
+    max-width: 100%;
+    padding: 0;
+}
+
+.create-post-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.post-title-input,
+.post-tags-input {
+    width: 100%;
+    background-color: #2D3748 !important;
+    color: #E5E7EB !important;
+    border: 1px solid #4A5568 !important;
+    border-radius: 0.5rem !important;
+    padding: 1rem 1.25rem !important;
+    font-size: 1.2rem !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.post-title-input:focus,
+.post-tags-input:focus {
+    outline: none !important;
+    border-color: #4A5568 !important;
+    box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.2) !important;
+    background-color: #2D3748 !important;
+}
+
+.post-title-input::placeholder,
+.post-tags-input::placeholder {
+    color: #A0AEC0 !important;
+}
+
+.quill-editor-wrapper {
+    background-color: #2D3748;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #4A5568;
+    position: relative;
+}
+
+/* Add fullscreen wrapper styles */
+.quill-editor-wrapper.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    border-radius: 0;
+    border: none;
+}
+
+/* Editor toolbar for fullscreen toggle */
+.editor-toolbar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 20;
+    display: flex;
+    gap: 8px;
+}
+
+.fullscreen-toggle {
+    background-color: #374151 !important;
+    border: 2px ridge #5190fd !important;
+    color: #E5E7EB !important;
+    padding: 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.fullscreen-toggle:hover {
+    /* background-color: #4B5563 !important; */
+    color: white !important;
+    background-color: #3a7cee !important;
+    border: 2px ridge #ffffff !important;
+}
+
+.quill-editor-wrapper.sticky {
+    position: fixed;
+    top: 64px; /* Adjust based on your navbar height */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1200px;
+    z-index: 10;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 1px solid #4A5568;
+    background-color: #374151;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.quill-editor-wrapper.fullscreen .ql-toolbar.ql-snow {
+    border-radius: 0;
+}
+
+.ql-container.ql-snow {
+    border: none;
+    background-color: #2D3748;
+    height: calc(100% - 62px);
+    border-bottom-left-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+.quill-editor-wrapper.fullscreen .ql-container.ql-snow {
+    height: calc(100vh - 42px);
+    border-radius: 0;
+}
+
+.ql-editor {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #E5E7EB;
+    padding: 1.5rem;
+}
+
+.ql-editor.ql-blank::before {
+    color: #A0AEC0;
+    font-style: normal;
+}
+
+.ql-snow .ql-stroke {
+    stroke: #E5E7EB;
+}
+
+.ql-snow .ql-fill,
+.ql-snow .ql-stroke.ql-fill {
+    fill: #E5E7EB;
+}
+
+.ql-snow .ql-picker {
+    color: #E5E7EB;
+}
+
+.ql-snow .ql-picker-options {
+    background-color: #374151;
+    border-color: #4A5568;
+}
+
+.ql-snow .ql-tooltip {
+    background-color: #374151;
+    border-color: #4A5568;
+    color: #E5E7EB;
+}
+
+.ql-snow .ql-tooltip input[type=text] {
+    background-color: #2D3748;
+    border-color: #4A5568;
+    color: #E5E7EB;
+}
+
+.ql-snow .ql-active {
+    background-color: #4A5568;
+}
+
+.ql-snow .ql-picker:hover,
+.ql-snow button:hover {
+    color: #FFF;
+}
+
+.ql-snow button:hover .ql-stroke {
+    stroke: #FFF;
+}
+
+.ql-snow button:hover .ql-fill {
+    fill: #FFF;
+}
+
+.submit-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3B82F6;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #2563EB;
+}
+
+@media (max-width: 768px) {
+    .quill-editor {
+        height: calc(100vh - 200px);
+    }
+
+    .quill-editor-wrapper.sticky {
+        width: 95%;
+        top: 56px;
+    }
+
+    .quill-editor-wrapper.fullscreen {
+        width: 100%;
+        top: 0;
+    }
+}
+
+.custom-input-wrapper input {
+    width: 100%;
+    background-color: #2D3748 !important;
+    color: #E5E7EB !important;
+    border: 1px solid #4A5568 !important;
+    border-radius: 0.5rem !important;
+    padding: 1rem 1.25rem !important;
+    font-size: 1.2rem !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.custom-input-wrapper input:focus {
+    outline: none !important;
+    border-color: #4A5568 !important;
+    box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.2) !important;
+    background-color: #2D3748 !important;
+}
+
+.custom-input-wrapper input::placeholder {
+    color: #A0AEC0 !important;
+}
+
+/* Ensure smooth transitions */
+.quill-editor-wrapper {
+    transition: all 0.3s ease-in-out;
+}
+
+.quill-editor {
+    transition: height 0.3s ease-in-out;
+}
+
+/* Fix for fullscreen sticky toolbar */
+.quill-editor-wrapper.fullscreen .ql-toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: #1a202c;
+}
+
+/* Ensure proper z-index stacking in fullscreen mode */
+.quill-editor-wrapper.fullscreen {
+    z-index: 1000;
+}
+
+.quill-editor-wrapper.fullscreen .editor-toolbar {
+    z-index: 1001;
+}
