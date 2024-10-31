@@ -9,6 +9,12 @@
 <br>
 
 # **Setup**
+
+### Requirements
+- Python 3.x
+- Node.js 18.x
+- Redis
+
 ## *Backend*
 ``` shell
 # Navigate to backend directory
@@ -25,10 +31,14 @@ pip3 install -r requirements.txt
 
 # Setup flask
 flask db migrate
-flask db update
+flask db upgrade
+
+# Spin redis
+sudo systemctl start redis-server
 
 # Spin the backend
 python3 main.py
+
 ```
 > Copy the backend server url ex: ```http://127.0.0.1:5000``` 
 
