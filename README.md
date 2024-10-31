@@ -15,26 +15,27 @@
 cd backend
 
 # Create a python virtual environment(venv)
-python -m venv .venv
+python3 -m venv .venv
 
 # Activate your virtual environment:
 source .venv/bin/activate
 
 # Install dependencies
-python install -r requirements.txt
+pip3 install -r requirements.txt
 
 # Setup flask
 flask db migrate
 flask db update
 
 # Spin the backend
-python main.py
+python3 main.py
 ```
 > Copy the backend server url ex: ```http://127.0.0.1:5000``` 
 
 ## *Frontend*
+### New terminal tab(please!!!)
 ```shell
-# Navigate to frontend directory(now you're in devhub/backend)
+# Navigate to frontend directory(now you're in DevHub/backend)
 cd ../frontend
 
 # Setup the .env file
