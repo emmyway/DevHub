@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import PropTypes from 'prop-types';
 
-const Overlay = ({ 
-  isOpen, 
-  onClose, 
-  title, 
-  message, 
-  confirmText = "Confirm", 
-  cancelText = "Cancel", 
+const Overlay = ({
+  isOpen,
+  onClose,
+  title,
+  message,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
   onConfirm,
-  isDestructive = false
+  isDestructive = false,
 }) => {
   const [isRendered, setIsRendered] = useState(false);
 
@@ -26,17 +26,23 @@ const Overlay = ({
   if (!isRendered) return null;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-      <div 
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${isOpen ? 'opacity-100' : 'opacity-0'}`} 
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center transition-all duration-300 ease-in-out ${
+        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ease-in-out ${
+          isOpen ? 'opacity-100' : 'opacity-0'
+        }`}
         onClick={onClose}
       ></div>
-      <div 
+      <div
         className={`relative bg-gray-800 text-white p-6 rounded-lg shadow-xl max-w-md w-full m-4 border border-gray-700 transition-all duration-300 ease-in-out ${
           isOpen ? 'scale-100 opacity-100' : 'scale-95 opacity-0'
         }`}
       >
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-2 right-2 text-gray-400 hover:text-white transition-colors duration-200"
         >
@@ -54,8 +60,8 @@ const Overlay = ({
           <button
             onClick={onConfirm}
             className={`px-4 py-2 rounded text-white transition-colors duration-200 ${
-              isDestructive 
-                ? 'bg-red-600 hover:bg-red-700' 
+              isDestructive
+                ? 'bg-red-600 hover:bg-red-700'
                 : 'bg-blue-600 hover:bg-blue-700'
             }`}
           >
@@ -75,7 +81,7 @@ Overlay.propTypes = {
   confirmText: PropTypes.string,
   cancelText: PropTypes.string,
   onConfirm: PropTypes.func.isRequired,
-  isDestructive: PropTypes.bool
+  isDestructive: PropTypes.bool,
 };
 
 export default Overlay;

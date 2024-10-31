@@ -1,87 +1,110 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
-import { Label } from "../components/ui/label"
-import { Card, CardContent, CardFooter } from "../components/ui/card"
-import { AlertCircle, User, Mail, Lock, UserPlus, Eye, EyeOff } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert"
-import { Separator } from "../components/ui/separator"
-import { FaGoogle } from "react-icons/fa"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs"
-import BackgroundBubbles from '../components/BackgroundBubbles'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Card, CardContent, CardFooter } from '../components/ui/card';
+import BackgroundBubbles from '../components/BackgroundBubbles';
+import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
+import { Separator } from '../components/ui/separator';
+import { FaGoogle } from 'react-icons/fa';
+import {
+  AlertCircle,
+  User,
+  Mail,
+  Lock,
+  UserPlus,
+  Eye,
+  EyeOff,
+} from 'lucide-react';
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from '../components/ui/tabs';
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AuthPage = () => {
-  const [activeTab, setActiveTab] = useState("login")
+  const [activeTab, setActiveTab] = useState('login');
   const [formData, setFormData] = useState({
     username: '',
     email: '',
     password: '',
     firstName: '',
     lastName: '',
-  })
-  const [error, setError] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const navigate = useNavigate()
+  });
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData(prevData => ({ ...prevData, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     try {
-      const endpoint = activeTab === 'login' ? 'http://127.0.0.1:5000/login' : 'http://127.0.0.1:5000/register'
+      const endpoint =
+        activeTab === 'login'
+          ? `${API_URL}/login`
+          : `${API_URL}/register`;
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
-      })
-      console.log('====================================');
-      console.log(formData);
-      console.log('====================================');
-      console.log(response.body);
+      });
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || `${activeTab === 'login' ? 'Login' : 'Registration'} failed`)
+        throw new Error(
+          data.message ||
+            `${activeTab === 'login' ? 'Login' : 'Registration'} failed`
+        );
       }
 
       if (data.access_token) {
-        localStorage.setItem('token', data.access_token)
-        navigate('/')
+        localStorage.setItem('token', data.access_token);
+        navigate('/');
       } else {
-        throw new Error('No access token received')
+        throw new Error('No access token received');
       }
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleGoogleAuth = () => {
-    console.log('Google authentication clicked')
-  }
+    console.log('Google authentication clicked');
+  };
 
   const handleGuestAccess = () => {
-    // Here you would typically set some state or token to indicate guest access
-    // For this example, we'll just navigate to the home page
-    navigate('/')
-  }
+    navigate('/');
+  };
 
-  const renderInput = (name, label, IconComponent, type = "text", required = true) => {
+  const renderInput = (
+    name,
+    label,
+    IconComponent,
+    type = 'text',
+    required = true
+  ) => {
     const isPassword = name === 'password';
     return (
       <div>
-        <Label htmlFor={name} className="text-sm font-medium text-gray-200 flex items-center">
+        <Label
+          htmlFor={name}
+          className="text-sm font-medium text-gray-200 flex items-center"
+        >
           {label}
           {required && <span className="text-red-500 ml-1">*</span>}
         </Label>
@@ -89,7 +112,7 @@ const AuthPage = () => {
           <Input
             id={name}
             name={name}
-            type={isPassword ? (showPassword ? "text" : "password") : type}
+            type={isPassword ? (showPassword ? 'text' : 'password') : type}
             required={required}
             className="w-full pl-8 pr-10 py-2 bg-gray-700/50 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder={`Enter your ${label.toLowerCase()}`}
@@ -104,19 +127,23 @@ const AuthPage = () => {
               className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-300 hover:text-white focus:outline-none bg-transparent hover:bg-transparent focus:bg-transparent"
               onClick={() => setShowPassword(!showPassword)}
             >
-              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              {showPassword ? (
+                <EyeOff className="w-4 h-4" />
+              ) : (
+                <Eye className="w-4 h-4" />
+              )}
             </Button>
           )}
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   const tabVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -10 }
-  }
+    exit: { opacity: 0, y: -10 },
+  };
 
   const renderForm = (tabValue) => (
     <motion.div
@@ -128,31 +155,37 @@ const AuthPage = () => {
       transition={{ duration: 0.3 }}
     >
       <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-        {tabValue === "register" && (
+        {tabValue === 'register' && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>{renderInput('firstName', 'First Name', User)}</div>
               <div>
-                {renderInput('firstName', 'First Name', User)}
-              </div>
-              <div>
-                {renderInput('lastName', 'Last Name', User, "text", false)}
+                {renderInput('lastName', 'Last Name', User, 'text', false)}
               </div>
             </div>
             {renderInput('email', 'Email address', Mail, 'email', true)}
           </>
         )}
-        {renderInput('username', 'Username', tabValue === "register" ? UserPlus : User)}
+        {renderInput(
+          'username',
+          'Username',
+          tabValue === 'register' ? UserPlus : User
+        )}
         {renderInput('password', 'Password', Lock)}
         <Button
           type="submit"
           className="w-full bg-blue-600 hover:bg-blue-700 text-white transition-colors duration-300"
           disabled={isLoading}
         >
-          {isLoading ? `${tabValue === 'login' ? 'Logging in' : 'Creating account'}...` : tabValue === 'login' ? 'Log in' : 'Create account'}
+          {isLoading
+            ? `${tabValue === 'login' ? 'Logging in' : 'Creating account'}...`
+            : tabValue === 'login'
+            ? 'Log in'
+            : 'Create account'}
         </Button>
       </form>
     </motion.div>
-  )
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center p-4 relative overflow-hidden">
@@ -171,7 +204,9 @@ const AuthPage = () => {
             </span>
             <span className="block text-white mt-2">Today</span>
           </h2>
-          <p className="text-xl font-semibold text-gray-300">Elevate Your Coding Journey</p>
+          <p className="text-xl font-semibold text-gray-300">
+            Elevate Your Coding Journey
+          </p>
           <ul className="space-y-3">
             <li className="flex items-center">
               <AlertCircle className="h-5 w-5 text-green-500 mr-2" />
@@ -186,8 +221,12 @@ const AuthPage = () => {
               <span>Collaborate on cutting-edge projects</span>
             </li>
           </ul>
-          <p className="text-2xl font-handwriting transform rotate-1 opacity-90 mt-4">Share. Learn. Collaborate.</p>
-          <p className="text-3xl font-handwriting transform -rotate-1 opacity-80">Connect with Developers!</p>
+          <p className="text-2xl font-handwriting transform rotate-1 opacity-90 mt-4">
+            Share. Learn. Collaborate.
+          </p>
+          <p className="text-3xl font-handwriting transform -rotate-1 opacity-80">
+            Connect with Developers!
+          </p>
         </motion.div>
 
         <motion.div
@@ -198,15 +237,19 @@ const AuthPage = () => {
         >
           <Card className="bg-gray-800/70 backdrop-blur-md border-gray-700/50">
             <CardContent className="text-gray-100">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
                 <TabsList className="grid w-full grid-cols-2 bg-gray-700/50 rounded-lg p-1 mt-4 mb-6">
-                  <TabsTrigger 
-                    value="login" 
+                  <TabsTrigger
+                    value="login"
                     className="rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-200"
                   >
                     Login
                   </TabsTrigger>
-                  <TabsTrigger 
+                  <TabsTrigger
                     value="register"
                     className="rounded-md data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-200"
                   >
@@ -219,8 +262,8 @@ const AuthPage = () => {
                   </h2>
                 </div>
                 <AnimatePresence mode="wait">
-                  {activeTab === "login" && renderForm("login")}
-                  {activeTab === "register" && renderForm("register")}
+                  {activeTab === 'login' && renderForm('login')}
+                  {activeTab === 'register' && renderForm('register')}
                 </AnimatePresence>
               </Tabs>
               {error && (
@@ -236,7 +279,9 @@ const AuthPage = () => {
                     <Separator className="w-full border-t border-gray-600" />
                   </div>
                   <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-gray-800 text-gray-400">Or continue with</span>
+                    <span className="px-2 bg-gray-800 text-gray-400">
+                      Or continue with
+                    </span>
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
@@ -263,13 +308,13 @@ const AuthPage = () => {
             </CardContent>
             <CardFooter className="flex justify-center">
               <p className="text-sm text-gray-300">
-                {activeTab === "login" ? (
+                {activeTab === 'login' ? (
                   <>
-                    Don't have an account?{' '}
+                    Don&#39;t have an account?{' '}
                     <Button
                       variant="link"
                       className="p-0 text-blue-400 hover:text-blue-300 transition-colors duration-300"
-                      onClick={() => setActiveTab("register")}
+                      onClick={() => setActiveTab('register')}
                     >
                       Sign up
                     </Button>
@@ -280,7 +325,7 @@ const AuthPage = () => {
                     <Button
                       variant="link"
                       className="p-0 text-blue-400 hover:text-blue-300 transition-colors duration-300"
-                      onClick={() => setActiveTab("login")}
+                      onClick={() => setActiveTab('login')}
                     >
                       Sign in
                     </Button>
@@ -292,7 +337,7 @@ const AuthPage = () => {
         </motion.div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AuthPage
+export default AuthPage;

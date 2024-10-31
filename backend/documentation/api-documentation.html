@@ -129,6 +129,14 @@
           <pre><code>cd /path_to_the_repo/backend</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
         </li>
         <li>
+            Create python virtual environment:
+            <pre><code>python -m venv .venv</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+        <li>
+            Activate your virtual environment:
+            <pre><code>source .venv/bin/activate</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+        </li>
+        <li>
           <div class="note">
             <strong>Note:</strong>
             Please ensure that your environment is set up
@@ -138,67 +146,219 @@
           </div>
         </li>
         <li>
-          Activate your virtual environment:
-          <pre><code>source .venv/bin/activate</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
-        </li>
-        <li>
           Run the Flask application:
           <pre><code>python main.py</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
         </li>
         <li>
-            The server will start, and you can access the API by default at (check the terminal for more).
+          The server will start, and you can access the API at:
           <pre><code>http://127.0.0.1:5000</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
         </li>
-
       </ol>
 
-      <h2>Available Endpoints</h2>
+      <h2>Authentication Endpoints</h2>
+
+      <h3>1. Register User</h3>
+      <p><strong>Endpoint:</strong> <code>/register</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Request Body:</strong></p>
+      <pre><code>{
+  "username": "johndoe",
+  "email": "john@example.com",
+  "password": "yourpassword",
+  "firstName": "John",
+  "lastName": "Doe"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+      <p><strong>Response:</strong></p>
+      <pre><code>{
+  "message": "User registered successfully",
+  "access_token": "jwt_token_here"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h3>2. Login</h3>
+      <p><strong>Endpoint:</strong> <code>/login</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Request Body:</strong></p>
+      <pre><code>{
+  "username": "johndoe",
+  "password": "yourpassword"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+      <p><strong>Response:</strong></p>
+      <pre><code>{
+  "access_token": "jwt_token_here"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h3>3. Logout</h3>
+      <p><strong>Endpoint:</strong> <code>/logout</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+      <p><strong>Response:</strong></p>
+      <pre><code>{
+  "message": "Successfully logged out"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h2>Post Management</h2>
 
       <h3>1. Create Post</h3>
       <p><strong>Endpoint:</strong> <code>/create_post</code></p>
       <p><strong>Method:</strong> <code>POST</code></p>
-      <p>
-        <strong>Request Body:</strong> All three fields
-        <strong>(hostId, title, body)</strong> are required.
-      </p>
+      <p><strong>Authentication:</strong> Required</p>
+      <p><strong>Request Body:</strong></p>
       <pre><code>{
-  "hostId": 1,
   "title": "My First Post",
-  "body": "This is the body of my first post."
-}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
-      <p><strong>Response:</strong></p>
-      <pre><code>{
-  "message": "Post created successfully"
+  "body": "This is the body of my first post.",
+  "tags": ["technology", "programming"]
 }</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
 
-      <h3>2. Additional Endpoints</h3>
-      <p>
-        Further endpoints will be documented here as they are created. Please
-        refer to the API code for more details on available methods.
-      </p>
+      <h3>2. Get Single Post</h3>
+      <p><strong>Endpoint:</strong> <code>/get_post/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Optional</p>
+
+      <h3>3. Get All Posts</h3>
+      <p><strong>Endpoint:</strong> <code>/get_posts</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Query Parameters:</strong></p>
+      <ul>
+        <li><code>page</code> (optional): Page number</li>
+        <li><code>tag</code> (optional): Filter by tag</li>
+      </ul>
+
+      <h3>4. Edit Post</h3>
+      <p><strong>Endpoint:</strong> <code>/edit_post/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>PUT</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+      <p><strong>Request Body:</strong></p>
+      <pre><code>{
+  "title": "Updated Title",
+  "body": "Updated content"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h3>5. Delete Post</h3>
+      <p><strong>Endpoint:</strong> <code>/delete_post/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>DELETE</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h2>User Profile Management</h2>
+
+      <h3>1. Get Current User</h3>
+      <p><strong>Endpoint:</strong> <code>/current_user</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>2. Edit Profile</h3>
+      <p><strong>Endpoint:</strong> <code>/edit_profile</code></p>
+      <p><strong>Method:</strong> <code>PUT</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+      <p><strong>Request Body (Form Data):</strong></p>
+      <pre><code>{
+  "firstName": "John",
+  "lastName": "Doe",
+  "email": "john@example.com",
+  "username": "johndoe",
+  "bio": "About me",
+  "profile_pic": [file]
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h2>Interaction Features</h2>
+
+      <h3>1. Bookmark Post</h3>
+      <p><strong>Endpoint:</strong> <code>/bookmark_post/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>2. Check Bookmark Status</h3>
+      <p><strong>Endpoint:</strong> <code>/is_bookmarked/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>3. Get Bookmarks</h3>
+      <p><strong>Endpoint:</strong> <code>/bookmarks</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>4. Like Post</h3>
+      <p><strong>Endpoint:</strong> <code>/like_post/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>5. Check Like Status</h3>
+      <p><strong>Endpoint:</strong> <code>/is_liked/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h2>Comments</h2>
+
+      <h3>1. Add Comment</h3>
+      <p><strong>Endpoint:</strong> <code>/add_comment/{post_id}</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+      <p><strong>Request Body:</strong></p>
+      <pre><code>{
+  "content": "This is a comment"
+}</code><button class="copy-button" onclick="copyToClipboard(this)">Copy</button></pre>
+
+      <h3>2. Like Comment</h3>
+      <p><strong>Endpoint:</strong> <code>/like_comment/{comment_id}</code></p>
+      <p><strong>Method:</strong> <code>POST</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>3. Check Comment Like Status</h3>
+      <p><strong>Endpoint:</strong> <code>/is_comment_liked/{comment_id}</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h3>4. Delete Comment</h3>
+      <p><strong>Endpoint:</strong> <code>/delete_comment/{comment_id}</code></p>
+      <p><strong>Method:</strong> <code>DELETE</code></p>
+      <p><strong>Authentication:</strong> Required</p>
+
+      <h2>Search and Discovery</h2>
+
+      <h3>1. Search</h3>
+      <p><strong>Endpoint:</strong> <code>/search</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Query Parameters:</strong></p>
+      <ul>
+        <li><code>q</code>: Search query</li>
+        <li><code>page</code> (optional): Page number</li>
+        <li><code>per_page</code> (optional): Results per page</li>
+      </ul>
+
+      <h3>2. Trending Stories</h3>
+      <p><strong>Endpoint:</strong> <code>/trending_stories</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+
+      <h3>3. Get Tags</h3>
+      <p><strong>Endpoint:</strong> <code>/get_tags</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+
+      <h3>4. Recent Activities</h3>
+      <p><strong>Endpoint:</strong> <code>/recent_activities</code></p>
+      <p><strong>Method:</strong> <code>GET</code></p>
+      <p><strong>Authentication:</strong> Required</p>
 
       <footer>&copy; 2024 DevHub Team. All Rights Reserved.</footer>
     </div>
 
     <script>
-      function copyToClipboard(button) {
-        const pre = button.parentElement;
-        const code = pre.querySelector('code');
-        const text = code.textContent;
-
-        navigator.clipboard
-          .writeText(text)
-          .then(() => {
-            const originalText = button.textContent;
-            button.textContent = 'Copied!';
-            setTimeout(() => {
-              button.textContent = originalText;
-            }, 2000);
-          })
-          .catch((err) => {
-            console.error('Failed to copy: ', err);
-          });
-      }
-    </script>
-  </body>
-</html>
+        function copyToClipboard(button) {
+          const pre = button.parentElement;
+          const code = pre.querySelector('code');
+          const text = code.textContent;
+  
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              const originalText = button.textContent;
+              button.textContent = 'Copied!';
+              setTimeout(() => {
+                button.textContent = originalText;
+              }, 2000);
+            })
+            .catch((err) => {
+              console.error('Failed to copy: ', err);
+            });
+        }
+      </script>
+    </body>
+  </html>

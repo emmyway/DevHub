@@ -1,14 +1,14 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import '../styles/CreatePost.css';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
-import { ArrowLeft, Send, X, Maximize2, Minimize2 } from 'lucide-react';
+import { Send, X, Maximize2, Minimize2 } from 'lucide-react';
 import Navbar from '../components/Navbar';
 
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function CreatePost() {
   const navigate = useNavigate();

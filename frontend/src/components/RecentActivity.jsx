@@ -1,10 +1,10 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 import { Clock, MessageSquare, Heart, Bookmark } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import PropTypes from 'prop-types';
 
-const API_URL = 'http://127.0.0.1:5000'; // Adjust this as needed
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function RecentActivity({ activities }) {
   const getActivityIcon = (type) => {
@@ -47,3 +47,19 @@ export default function RecentActivity({ activities }) {
     </div>
   );
 }
+
+// Prop validation
+RecentActivity.propTypes = {
+    activities: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        userAvatar: PropTypes.string.isRequired,
+        username: PropTypes.string.isRequired,
+        action: PropTypes.string.isRequired,
+        postTitle: PropTypes.string.isRequired,
+        postId: PropTypes.number.isRequired,
+        type: PropTypes.string.isRequired,
+        timeAgo: PropTypes.string.isRequired,
+      })
+    ).isRequired, // Array of activity objects
+  };
