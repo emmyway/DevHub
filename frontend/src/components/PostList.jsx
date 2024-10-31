@@ -1,8 +1,9 @@
-import React from 'react';
 import { Card, CardHeader, CardContent } from './ui/card';
 import { Avatar, AvatarImage } from './ui/avatar';
 import TagCloud from './TagCloud';
+import PropTypes from 'prop-types'; 
 
+const API_URL = import.meta.env.VITE_API_URL;
 export default function PostList({ posts }) {
   return (
     <div className="space-y-6">
@@ -31,11 +32,21 @@ export default function PostList({ posts }) {
               )}
             </div>
           </CardHeader>
-          <CardContent>
-            {/* Add post content here */}
-          </CardContent>
+          <CardContent>{/* Add post content here */}</CardContent>
         </Card>
       ))}
     </div>
   );
 }
+
+// Prop validation
+PostList.propTypes = {
+    posts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        host_avatar: PropTypes.string.isRequired,
+        host_username: PropTypes.string,
+        tags: PropTypes.arrayOf(PropTypes.string), // Optional array of strings for tags
+      })
+    ).isRequired, // Array of post objects
+  };

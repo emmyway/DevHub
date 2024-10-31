@@ -6,7 +6,7 @@ import { ArrowLeft, Bookmark, Calendar, User, ExternalLink } from 'lucide-react'
 import { Skeleton } from '../components/ui/skeleton';
 import Navbar from "../components/Navbar";
 
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Bookmarks() {
     const [bookmarks, setBookmarks] = useState([]);
@@ -85,7 +85,7 @@ export default function Bookmarks() {
                                             {new Date(bookmark.created).toLocaleDateString()}
                                         </span>
                                         <Button variant="ghost" size="sm" asChild>
-                                            <Link to={`/post/${bookmark.id}`} className="text-blue-400 hover:text-blue-300 transition-colors duration-200">
+                                            <Link to={`/post/${bookmark.id}`} className="text-blue-400 hover:text-blue-600 transition-colors duration-200">
                                                 Read More
                                                 <ExternalLink className="ml-1 h-4 w-4" />
                                             </Link>
@@ -99,7 +99,7 @@ export default function Bookmarks() {
                     <Card className="bg-gray-800 border-gray-700">
                         <CardContent className="flex flex-col items-center justify-center py-12">
                             <Bookmark className="h-16 w-16 text-gray-600 mb-4" />
-                            <p className="text-gray-400 text-lg mb-4">You haven't bookmarked any posts yet.</p>
+                            <p className="text-gray-400 text-lg mb-4">You haven&apos;t bookmarked any posts yet.</p>
                             <Button asChild>
                                 <Link to="/" className="bg-blue-500 hover:bg-blue-600 text-white transition-colors duration-200">
                                     Explore DevHub

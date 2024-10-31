@@ -25,7 +25,7 @@ configured before running this application.
 from flask import jsonify, request, send_from_directory
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, verify_jwt_in_request
 from config import db, app, login_manager
-from models import Post, User, Tag, Comment
+from models import Post, User, Tag, Comment, post_likes
 from werkzeug.utils import secure_filename
 import os
 from sqlalchemy import or_, desc, func
@@ -472,29 +472,38 @@ def trending_stories():
         tuple: JSON response with trending stories data
             success: (list of {"id": int, "title": str, "likes": int, "host_username": str}, 200)
     """
+    # Check cache first
     cached_data = cache.get('trending_stories')
     if cached_data:
         return jsonify(cached_data)
 
-    trending_posts = db.session.query(Post, func.count(Post.liked_by).label('likes_count'))\
-        .join(Post.liked_by)\
-        .group_by(Post.id)\
-        .order_by(desc('likes_count'))\
-        .limit(10)\
-        .all()
+    # Query to get posts and their like counts
+    trending_posts = db.session.query(
+        Post,
+        db.func.count(post_likes.c.user_id).label('likes_count')
+    ).outerjoin(
+        post_likes,
+        Post.id == post_likes.c.post_id
+    ).group_by(
+        Post.id
+    ).order_by(
+        db.desc('likes_count')
+    ).limit(10).all()
 
+    # Format the response data
     trending_data = []
     for post, likes_count in trending_posts:
-        host = User.query.get(post.host_id)
         trending_data.append({
             "id": post.id,
             "title": post.title,
             "likes": likes_count,
-            "host_username": host.username if host else None
+            "host_username": post.host.username if post.host else None
         })
 
+    # Cache the results
     cache.set('trending_stories', trending_data,
               timeout=300)  # Cache for 5 minutes
+
     return jsonify(trending_data)
 
 
@@ -614,6 +623,7 @@ def like_post(post_id):
 
     db.session.commit()
 
+    cache.delete('trending_stories')
     return jsonify({
         "message": message,
         "isLiked": is_liked,
@@ -782,4 +792,3 @@ if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)
-

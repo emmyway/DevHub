@@ -1,26 +1,34 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent } from './ui/card';
 import { Eye, Clock } from 'lucide-react';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
+import PropTypes from 'prop-types';
 
-const API_URL = 'http://127.0.0.1:5000'; // Adjust this as needed
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function TrendingStories({ stories }) {
   return (
     <div className="mb-8">
-      <h2 className="text-xl font-semibold mb-4 text-blue-400">Trending Stories</h2>
+      <h2 className="text-xl font-semibold mb-4 text-blue-400">
+        Trending Stories
+      </h2>
       <div className="space-y-4">
         {stories.map((story) => (
           <Card key={story.id} className="bg-gray-800 border-gray-700">
             <CardContent className="p-4">
-              <Link to={`/post/${story.id}`} className="text-gray-200 hover:text-blue-400 transition-colors duration-200">
+              <Link
+                to={`/post/${story.id}`}
+                className="text-gray-200 hover:text-blue-400 transition-colors duration-200"
+              >
                 <h3 className="font-medium mb-2">{story.title}</h3>
               </Link>
               <div className="flex items-center justify-between text-gray-400 text-sm">
                 <div className="flex items-center space-x-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarImage src={`${API_URL}/uploads/${story.authorAvatar}`} alt={story.authorName} />
+                    <AvatarImage
+                      src={`${API_URL}/uploads/${story.authorAvatar}`}
+                      alt={story.authorName}
+                    />
                     <AvatarFallback>{story.authorName[0]}</AvatarFallback>
                   </Avatar>
                   <span>{story.authorName}</span>
@@ -43,3 +51,17 @@ export default function TrendingStories({ stories }) {
     </div>
   );
 }
+
+// Prop validation
+TrendingStories.propTypes = {
+  stories: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      authorAvatar: PropTypes.string.isRequired,
+      authorName: PropTypes.string.isRequired,
+      views: PropTypes.number.isRequired,
+      readTime: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};

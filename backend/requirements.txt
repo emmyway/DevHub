@@ -23,4 +23,3 @@ redis==5.1.1
 SQLAlchemy==2.0.35
 typing_extensions==4.12.2
 Werkzeug==3.0.4
-flask-jwt-extended==4.6.0

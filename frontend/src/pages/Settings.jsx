@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar'; // Import the Navbar component
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Textarea } from '../components/ui/textarea';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '../components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
 import { Label } from '../components/ui/label';
 import { AlertCircle, User, Upload as UploadIcon } from 'lucide-react'; // Import the Upload icon
 import { Alert, AlertDescription, AlertTitle } from '../components/ui/alert';
 import { Skeleton } from '../components/ui/skeleton';
 
-const API_URL = "http://127.0.0.1:5000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -27,7 +33,6 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [userProfilePic, setUserProfilePic] = useState(null);
 
   useEffect(() => {
     fetchUserData();
@@ -38,18 +43,19 @@ export default function SettingsPage() {
     try {
       const response = await fetch(`${API_URL}/current_user`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
       });
       if (!response.ok) throw new Error('Failed to fetch user data');
       const userData = await response.json();
       setFormData(userData);
       // Update this line to construct the full URL for the profile picture
-      const profilePicUrl = userData.profile_pic ? `${API_URL}/uploads/${userData.profile_pic}` : null;
-      setUserProfilePic(profilePicUrl);
+      const profilePicUrl = userData.profile_pic
+        ? `${API_URL}/uploads/${userData.profile_pic}`
+        : null;
       setPreview(profilePicUrl);
     } catch (err) {
-      setError('Failed to load user data. Please try again.');
+      setError('Failed to load user data. Please try again.', err);
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +101,7 @@ export default function SettingsPage() {
       const response = await fetch(`${API_URL}/edit_profile`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
         body: formDataToSend,
       });
@@ -161,7 +167,9 @@ export default function SettingsPage() {
         <div className="container mx-auto px-4">
           <Card className="max-w-2xl mx-auto bg-gray-800 border-gray-700">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold text-blue-400">Edit Profile</CardTitle>
+              <CardTitle className="text-2xl font-bold text-blue-400">
+                Edit Profile
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -195,17 +203,25 @@ export default function SettingsPage() {
                       </label>
                     </div>
                     <div className="flex-1">
-                      <Label htmlFor="profile_pic" className="text-sm font-medium text-gray-300">
+                      <Label
+                        htmlFor="profile_pic"
+                        className="text-sm font-medium text-gray-300"
+                      >
                         Upload Profile Picture
                       </Label>
-                      <p className="text-gray-500 text-sm">Allowed formats: JPG, PNG</p>
+                      <p className="text-gray-500 text-sm">
+                        Allowed formats: JPG, PNG
+                      </p>
                     </div>
                   </div>
 
                   {/* Other Form Fields */}
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <Label htmlFor="first-name" className="text-sm font-medium text-gray-300">
+                      <Label
+                        htmlFor="first-name"
+                        className="text-sm font-medium text-gray-300"
+                      >
                         First Name
                       </Label>
                       <Input
@@ -219,7 +235,10 @@ export default function SettingsPage() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="last-name" className="text-sm font-medium text-gray-300">
+                      <Label
+                        htmlFor="last-name"
+                        className="text-sm font-medium text-gray-300"
+                      >
                         Last Name
                       </Label>
                       <Input
@@ -234,7 +253,10 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="email" className="text-sm font-medium text-gray-300">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-gray-300"
+                    >
                       Email
                     </Label>
                     <Input
@@ -249,7 +271,10 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="username" className="text-sm font-medium text-gray-300">
+                    <Label
+                      htmlFor="username"
+                      className="text-sm font-medium text-gray-300"
+                    >
                       Username
                     </Label>
                     <Input
@@ -264,7 +289,10 @@ export default function SettingsPage() {
                   </div>
 
                   <div>
-                    <Label htmlFor="bio" className="text-sm font-medium text-gray-300">
+                    <Label
+                      htmlFor="bio"
+                      className="text-sm font-medium text-gray-300"
+                    >
                       Bio
                     </Label>
                     <Textarea
@@ -291,13 +319,19 @@ export default function SettingsPage() {
                   <Alert className="mt-4 bg-green-700 border-green-600">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Success</AlertTitle>
-                    <AlertDescription>Your profile has been updated successfully.</AlertDescription>
+                    <AlertDescription>
+                      Your profile has been updated successfully.
+                    </AlertDescription>
                   </Alert>
                 )}
 
                 {/* Form Actions */}
                 <CardFooter className="flex justify-end space-x-4 mt-6 px-0">
-                  <Button type="button" variant="outline" onClick={() => navigate('/')}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => navigate('/')}
+                  >
                     Cancel
                   </Button>
                   <Button type="submit" disabled={isLoading}>

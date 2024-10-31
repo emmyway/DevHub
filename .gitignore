@@ -24,7 +24,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+# lib/
 lib64/
 parts/
 sdist/
@@ -73,6 +73,7 @@ db.sqlite3-journal
 
 # Flask stuff:
 instance/
+migrations/
 
 # Scrapy stuff:
 .scrapy

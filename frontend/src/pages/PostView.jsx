@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'; // Correct import
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import Navbar from '../components/Navbar';
+import Overlay from '../components/Overlay';
+import TagBadge from '../components/ExploreTags'; // Make sure the import path is correct
+import { Skeleton } from '../components/ui/skeleton';
+import '../styles/PostView.css';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
 import {
   ArrowLeft,
   Heart,
@@ -22,69 +26,13 @@ import {
   Edit,
   Trash2,
 } from 'lucide-react';
-import Navbar from '../components/Navbar';
-import Overlay from '../components/Overlay';
-import TagBadge from '../components/ExploreTags';  // Make sure the import path is correct
-import { Skeleton } from '../components/ui/skeleton';
 
-const postContentStyles = `
-  .post-content h1, .post-content h2, .post-content h3, .post-content h4, .post-content h5, .post-content h6 {
-    color: #fff;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-  }
-  .post-content h1 { font-size: 2.5em; }
-  .post-content h2 { font-size: 2em; }
-  .post-content h3 { font-size: 1.75em; }
-  .post-content h4 { font-size: 1.5em; }
-  .post-content h5 { font-size: 1.25em; }
-  .post-content h6 { font-size: 1em; }
-  .post-content p {
-    margin-bottom: 1em;
-    line-height: 1.6;
-  }
-  .post-content ul, .post-content ol {
-    margin-bottom: 1em;
-    padding-left: 2em;
-  }
-  .post-content li {
-    margin-bottom: 0.5em;
-  }
-  .post-content pre {
-    background-color: #2d3748;
-    padding: 1em;
-    border-radius: 0.375rem;
-    overflow-x: auto;
-    margin-bottom: 1em;
-  }
-  .post-content code {
-    font-family: monospace;
-    font-size: 0.9em;
-    background-color: #2d3748;
-    padding: 0.2em 0.4em;
-    border-radius: 0.25em;
-  }
-  .post-content a {
-    color: #4299e1;
-    text-decoration: underline;
-  }
-  .post-content blockquote {
-    border-left: 4px solid #4a5568;
-    padding-left: 1em;
-    margin-left: 0;
-    margin-right: 0;
-    font-style: italic;
-    margin-bottom: 1em;
-  }
-`;
-
-const API_URL = 'http://127.0.0.1:5000';
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PostView() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [likes, setLikes] = useState(0);
   const [isLiked, setIsLiked] = useState(false);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
@@ -92,14 +40,13 @@ export default function PostView() {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isDeleteOverlayOpen, setIsDeleteOverlayOpen] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
-  const [commentLikes, setCommentLikes] = useState({});
   const [commentToDelete, setCommentToDelete] = useState(null);
   const [showLoginOverlay, setShowLoginOverlay] = useState(false);
   const [overlayMessage, setOverlayMessage] = useState('');
 
   // Function to get the JWT token
   const getToken = () => {
-    return localStorage.getItem('token') || ""; // Get token from localStorage
+    return localStorage.getItem('token') || ''; // Get token from localStorage
   };
 
   // Function to get current user ID from token
@@ -137,10 +84,9 @@ export default function PostView() {
       }
       const data = await response.json();
       setPost(data);
-      setLikes(data.likes);
       setIsLiked(data.isLiked);
       setComments(data.comments || []);
-      
+
       // Check if current user is the post owner
       const currentUserId = getCurrentUserId();
       setIsOwner(currentUserId === data.host_id);
@@ -185,7 +131,7 @@ export default function PostView() {
       const response = await fetch(`${API_URL}/like_post/${id}`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       if (!response.ok) throw new Error('Failed to like/unlike post');
@@ -201,7 +147,7 @@ export default function PostView() {
     try {
       const response = await fetch(`${API_URL}/is_liked/${id}`, {
         headers: {
-          'Authorization': `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       if (!response.ok) throw new Error('Failed to check like status');
@@ -248,7 +194,7 @@ export default function PostView() {
       const response = await fetch(`${API_URL}/delete_post/${id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${getToken()}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       });
       if (!response.ok) {
@@ -287,11 +233,14 @@ export default function PostView() {
   const handleShare = () => {
     // Implement share functionality (e.g., copy link to clipboard)
     const postUrl = window.location.href;
-    navigator.clipboard.writeText(postUrl).then(() => {
-      alert('Link copied to clipboard!');
-    }).catch((err) => {
-      console.error('Failed to copy: ', err);
-    });
+    navigator.clipboard
+      .writeText(postUrl)
+      .then(() => {
+        alert('Link copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy: ', err);
+      });
   };
 
   const handleCommentLike = async (commentId) => {
@@ -306,11 +255,13 @@ export default function PostView() {
         throw new Error('Network response was not ok');
       }
       const data = await response.json();
-      setComments(comments.map(comment => 
-        comment.id === commentId 
-          ? { ...comment, likes: data.likes, isLiked: data.isLiked } 
-          : comment
-      ));
+      setComments(
+        comments.map((comment) =>
+          comment.id === commentId
+            ? { ...comment, likes: data.likes, isLiked: data.isLiked }
+            : comment
+        )
+      );
     } catch (error) {
       console.error('Error liking/unliking comment:', error);
     }
@@ -324,17 +275,20 @@ export default function PostView() {
     if (!commentToDelete) return;
 
     try {
-      const response = await fetch(`${API_URL}/delete_comment/${commentToDelete}`, {
-        method: 'DELETE',
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      });
+      const response = await fetch(
+        `${API_URL}/delete_comment/${commentToDelete}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
       // Remove the deleted comment from the state
-      setComments(comments.filter(comment => comment.id !== commentToDelete));
+      setComments(comments.filter((comment) => comment.id !== commentToDelete));
       setCommentToDelete(null); // Reset the commentToDelete state
     } catch (error) {
       console.error('Error deleting comment:', error);
@@ -390,10 +344,9 @@ export default function PostView() {
     <>
       <Navbar showWriteStory={true} />
       <div
-        className="container mx-auto px-4 py-8 max-w-4xl"
+        className="mx-auto px-[5%] lg:0 py-8 sm:max-w-[90%] md:max-w-[80%] post-content"
         style={{ backgroundColor: '#111827' }}
       >
-        <style>{postContentStyles}</style>
         <Button
           variant="ghost"
           className="mb-4 text-blue-400 hover:text-blue-600"
@@ -405,19 +358,25 @@ export default function PostView() {
         <article className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16"> {/* Container to control overall size */}
+              <div className="w-16 h-16">
+                {' '}
+                {/* Container to control overall size */}
                 <Avatar className="w-full h-full">
-                  <AvatarImage 
-                    src={post.host_avatar ? `${API_URL}/uploads/${post.host_avatar}` : null}
-                    alt={post.host_username || "User"}
+                  <AvatarImage
+                    src={
+                      post.host_avatar
+                        ? `${API_URL}/uploads/${post.host_avatar}`
+                        : null
+                    }
+                    alt={post.host_username || 'User'}
                     className="object-cover w-full h-full"
                   />
-                  <AvatarFallback 
-                    className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl flex items-center justify-center w-full h-full"
-                  >
-                    {post.host_username ? post.host_username[0].toUpperCase() : 'U'}
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-2xl flex items-center justify-center w-full h-full">
+                    {post.host_username
+                      ? post.host_username[0].toUpperCase()
+                      : 'U'}
                   </AvatarFallback>
-                </Avatar>   
+                </Avatar>
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-white">
@@ -429,13 +388,11 @@ export default function PostView() {
                 </p>
               </div>
               <Bookmark
-    className={`w-7 h-7 cursor-pointer transition-all duration-200 transform hover:scale-125 text-yellow-400  hover:fill-yellow-400/25 ${
-      isBookmarked
-        ? ' fill-yellow-400'
-        : ''
-    }`}
-    onClick={handleBookmark}
-  />
+                className={`w-7 h-7 cursor-pointer transition-all duration-200 transform hover:scale-125 text-yellow-400  hover:fill-yellow-400/25 ${
+                  isBookmarked ? ' fill-yellow-400' : ''
+                }`}
+                onClick={handleBookmark}
+              />
             </div>
             <div className="flex space-x-2">
               {isOwner ? (
@@ -463,26 +420,33 @@ export default function PostView() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className={`text-${isLiked ? 'red' : 'gray'}-400 hover:text-white hover:bg-red-600 transition-colors duration-200`}
+                  className={`text-${
+                    isLiked ? 'red' : 'gray'
+                  }-400 hover:text-white hover:bg-red-600 transition-colors duration-200`}
                   onClick={handleLike}
                 >
-                  <Heart className={`w-7 h-7 mr-1 ${isLiked ? 'fill-current' : ''}`} />
-                  <span className="hidden sm:inline">{isLiked ? 'Liked' : 'Like'}</span>
+                  <Heart
+                    className={`w-7 h-7 mr-1 ${isLiked ? 'fill-current' : ''}`}
+                  />
+                  <span className="hidden sm:inline">
+                    {isLiked ? 'Liked' : 'Like'}
+                  </span>
                 </Button>
               )}
             </div>
           </div>
           <h1 className="text-4xl font-bold mb-4 text-white">{post.title}</h1>
           <div className="flex flex-wrap gap-2 mb-6">
-            {post.tags && post.tags.map((tag, index) => (
-              <TagBadge
-                key={index}
-                tagName={tag}
-                selectedTag=""  // No tag is selected in this view
-                onTagClick={handleTagClick}
-                defaultTagName=""  // Assuming there's no default tag in this view
-              />
-            ))}
+            {post.tags &&
+              post.tags.map((tag, index) => (
+                <TagBadge
+                  key={index}
+                  tagName={tag}
+                  selectedTag="" // No tag is selected in this view
+                  onTagClick={handleTagClick}
+                  defaultTagName="" // Assuming there's no default tag in this view
+                />
+              ))}
           </div>
           <div className="prose prose-invert max-w-none post-content text-gray-300">
             <div dangerouslySetInnerHTML={{ __html: post.body }} />
@@ -516,12 +480,10 @@ export default function PostView() {
                 </Button>
               </div>
               <div className="flex items-center space-x-4">
-              <Bookmark
-    className={`w-7 h-7 cursor-pointer transition-all duration-200 transform hover:scale-125 text-yellow-400  hover:fill-yellow-400/25 ${
-      isBookmarked
-        ? ' fill-yellow-400'
-        : ''
-    }`}
+                <Bookmark
+                  className={`w-7 h-7 cursor-pointer transition-all duration-200 transform hover:scale-125 text-yellow-400  hover:fill-yellow-400/25 ${
+                    isBookmarked ? ' fill-yellow-400' : ''
+                  }`}
                   onClick={handleBookmark}
                 />
                 <Button
@@ -546,7 +508,11 @@ export default function PostView() {
                 <div key={comment.id} className="flex space-x-4">
                   <Avatar>
                     <AvatarImage
-                      src={comment.author.avatar ? `${API_URL}/uploads/${comment.author.avatar}` : null}
+                      src={
+                        comment.author.avatar
+                          ? `${API_URL}/uploads/${comment.author.avatar}`
+                          : null
+                      }
                       alt={comment.author.name}
                     />
                     <AvatarFallback>{comment.author.name[0]}</AvatarFallback>
@@ -567,7 +533,9 @@ export default function PostView() {
                         >
                           <Heart
                             className={`w-4 h-4 ${
-                              comment.isLiked ? 'fill-current' : 'stroke-current'
+                              comment.isLiked
+                                ? 'fill-current'
+                                : 'stroke-current'
                             }`}
                           />
                           <span>{comment.likes}</span>

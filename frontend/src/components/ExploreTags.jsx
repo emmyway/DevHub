@@ -1,8 +1,13 @@
-import React from 'react';
 import { Button } from './ui/button';
 import { Compass } from 'lucide-react';
+import PropTypes from 'prop-types';
 
-export default function TagBadge({ tagName, selectedTag, onTagClick, defaultTagName }) {
+export default function TagBadge({
+  tagName,
+  selectedTag,
+  onTagClick,
+  defaultTagName,
+}) {
   if (tagName === defaultTagName) {
     return (
       <Button
@@ -44,3 +49,11 @@ export default function TagBadge({ tagName, selectedTag, onTagClick, defaultTagN
     );
   }
 }
+
+// Prop validation
+TagBadge.propTypes = {
+  tagName: PropTypes.string.isRequired, // Required string for the tag name
+  selectedTag: PropTypes.string, // Optional string for the selected tag
+  onTagClick: PropTypes.func.isRequired, // Required function for tag click handler
+  defaultTagName: PropTypes.string, // Optional string for the default tag name
+};

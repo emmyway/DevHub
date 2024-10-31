@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { ChevronDown, ChevronUp, Compass, Hash } from 'lucide-react';
+import { ChevronDown, ChevronUp, Compass } from 'lucide-react';
+import PropTypes from 'prop-types';
 
 export default function TagDisplay({
   tags,
@@ -17,6 +18,10 @@ export default function TagDisplay({
   const ALL_TAGS_LABEL = 'Explore All';
 
   const TagBadge = ({ tag }) => {
+    TagBadge.propTypes = {
+      tag: PropTypes.string.isRequired,
+    };
+
     if (tag === ALL_TAGS_LABEL) {
       return (
         <Button
@@ -87,3 +92,11 @@ export default function TagDisplay({
     </div>
   );
 }
+
+// Prop validation
+TagDisplay.propTypes = {
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired, // Array of strings for tags
+  maxVisibleTags: PropTypes.number, // Number for max visible tags
+  onTagClick: PropTypes.func, // Function for tag click handler
+  selectedTag: PropTypes.string, // String for the selected tag
+};
